@@ -1,0 +1,20 @@
+{
+  "name": "kaseddie-labs-ltd-oversight-sentinel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^2.3.0",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.2",
+    "mongodb": "^7.2.0"
+  }
+}
