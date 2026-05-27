@@ -272,6 +272,25 @@ app.post("/api/audit", async (req, res) => {
         protocolVersion: "2.0.0",
         source: "WEB_DASHBOARD"
       });
+
+      // Immediate Async Sync: Forward audit record asynchronously to Python Qdrant Engine on port 10000
+      console.log("📡 Triggering Immediate Async Sync of audit record to Python Qdrant Engine...");
+      fetch("http://127.0.0.1:10000/api/sync-audit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          audit_id: auditResult.id,
+          company_name: auditResult.companyName,
+          risk_level: auditResult.riskLevel,
+          status: auditResult.status,
+          raw_text: text
+        })
+      }).catch(err => {
+        console.warn("⚠️ Immediate Async Sync to Qdrant bypassed/failed:", err.message);
+      });
+
     } catch (mErr) {
       console.log("⚠️ MongoDB logging bypassed during network latency window.");
     }
