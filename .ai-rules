@@ -1,0 +1,10 @@
+# Kaseddie Labs LTD - Core Workspace Rules
+
+## 1. Preservation Mandate
+- The agent shall not change, strip, or remove the main functions of the App, including the Admin Dashboard and login authentication paths (`/api/admin/login`). This remains unchanged until explicitly instructed otherwise.
+- The agent will perform professional-grade production work—no generic placeholder code or rough boilerplate.
+
+## 2. Database Integration
+- All statistics, metrics, and streams must pull directly via aggregation from the `oversight_sentinel_db` collections on MongoDB Atlas.
+- Never substitute functional database pipelines with static `SIMULATION_DATA` or mock arrays unless a connection timeout occurs.
+- Maintain short network safeguards (`serverSelectionTimeoutMS: 3000`) to keep the UI active during localized latency.

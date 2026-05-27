@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import { MongoClient } from "mongodb";
 import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
@@ -20,8 +20,8 @@ if (!MONGO_URI) {
 // Initialize GoogleGenAI with API key
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Reusable 15-second network timeout wrapper to prevent localized latency drops
-const withTimeout = (promise, ms = 15000) => {
+// Reusable 3-second network timeout wrapper
+const withTimeout = (promise, ms = 3000) => {
   return Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(() => reject(new Error("Network Timeout")), ms))
@@ -44,10 +44,6 @@ app.use(express.json());
 app.use(express.static(join(__dirname, "public")));
 
 const SIMULATION_DATA = {
-  success: true,
-  ethicalImpact: 500380,
-  verifiedActiveNodes: 127,
-  globalSyncRate: 99.9,
   totalAudits: 127,
   flaggedViolations: 43,
   complianceRate: 66.1,
@@ -55,9 +51,9 @@ const SIMULATION_DATA = {
   criticalAlerts: 7,
   recentActivity: [
     {
-      nodeId: "GLB-NODE-SIM",
-      companyName: "Vanguard Global Horizon Group",
-      riskAssessment: "CRITICAL",
+      id: "SIM-001",
+      company: "Vanguard Global Horizon Group",
+      riskLevel: "CRITICAL",
       timestamp: new Date().toISOString(),
       status: "FLAGGED_VIOLATION"
     }
@@ -65,14 +61,6 @@ const SIMULATION_DATA = {
   riskDistribution: { LOW: 84, MEDIUM: 31, CRITICAL: 12 },
   corridorActivity: { "Uganda-Dubai": 67, "Uganda-Qatar": 34, "Uganda-Saudi": 26 }
 };
-
-// Internal utility logic tracker
-function getInternalServerUptime() {
-  const uptime = process.uptime();
-  const hrs = Math.floor(uptime / 3600);
-  const mins = Math.floor((uptime % 3600) / 60);
-  return `${hrs}h ${mins}m active`;
-}
 
 // API Endpoint: GET /api/dashboard-stats
 app.get("/api/dashboard-stats", async (req, res) => {
@@ -112,42 +100,15 @@ app.get("/api/dashboard-stats", async (req, res) => {
     // 3) Fetch last 15 live migration steps from node_handshakes
     const liveMigrationSteps = await nodeHandshakes.find({}).sort({ timestamp: -1 }).limit(15).toArray();
 
-    // Helper validators to ensure primitives only (prevents untrusted/malicious JSON objects)
-    const safeNumber = (v, def = 0) => {
-      if (typeof v === 'number' && Number.isFinite(v)) return v;
-      if (typeof v === 'string' && v.trim() !== '') {
-        const n = Number(v);
-        if (Number.isFinite(n)) return n;
-      }
-      return def;
-    };
-
-    const safeString = (v, def = 'Unknown') => {
-      if (typeof v === 'string') return v;
-      if (typeof v === 'number' || typeof v === 'boolean') return String(v);
-      return def;
-    };
-
-    const safeTimestamp = (t) => {
-      if (!t) return new Date().toISOString();
-      if (t instanceof Date && !isNaN(t.getTime())) return t.toISOString();
-      const parsed = new Date(t);
-      if (!isNaN(parsed.getTime())) return parsed.toISOString();
-      return new Date().toISOString();
-    };
-
-    // Build a recentActivity feed from latest audits (limit 10) with strict typing
+    // Build a recentActivity feed from latest audits (limit 10)
     const recentAuditDocs = await auditLedger.find({}, { projection: { structuredAnalysis: 1, auditTimestamp: 1 } }).sort({ auditTimestamp: -1 }).limit(10).toArray();
-    const recentActivity = recentAuditDocs.map(doc => {
-      const sa = doc.structuredAnalysis || {};
-      return {
-        id: String(doc._id),
-        companyName: safeString(sa.companyName, 'Unknown'),
-        riskLevel: safeString(sa.riskAssessment, 'UNKNOWN'),
-        timestamp: safeTimestamp(doc.auditTimestamp),
-        status: sa.complianceViolationDetected ? 'FLAGGED_VIOLATION' : 'VERIFIED_COMPLIANT'
-      };
-    });
+    const recentActivity = recentAuditDocs.map(doc => ({
+      id: doc._id,
+      companyName: doc.structuredAnalysis?.companyName || 'Unknown',
+      riskLevel: doc.structuredAnalysis?.riskAssessment || 'UNKNOWN',
+      timestamp: doc.auditTimestamp,
+      status: doc.structuredAnalysis?.complianceViolationDetected ? 'FLAGGED_VIOLATION' : 'VERIFIED_COMPLIANT'
+    }));
 
     // riskDistribution aggregation
     const distAgg = await auditLedger.aggregate([
@@ -156,56 +117,17 @@ app.get("/api/dashboard-stats", async (req, res) => {
     const riskDistribution = {};
     distAgg.forEach(d => { riskDistribution[d._id || 'UNKNOWN'] = d.count; });
 
-    // Ensure numeric top-level stats are safe numbers before returning to frontend
     const stats = {
-      totalFeesBlocked: safeNumber(auditStats.totalFeesBlocked, 0),
-      totalAuditsExecuted: safeNumber(auditStats.totalAuditsExecuted, 0),
-      flaggedViolations: safeNumber(auditStats.flaggedViolations, 0),
-      verifiedCandidates: safeNumber(verifiedCandidates, 0),
-      liveMigrationSteps: Array.isArray(liveMigrationSteps) ? liveMigrationSteps.map(step => {
-        // sanitize each handshake step to prevent nested objects from reaching frontend
-        return {
-          id: step._id ? String(step._id) : undefined,
-          node: safeString(step.node, ''),
-          action: safeString(step.action, ''),
-          timestamp: safeTimestamp(step.timestamp),
-          metadata: undefined // intentionally drop free-form metadata to avoid untrusted objects
-        };
-      }) : [],
+      totalFeesBlocked: auditStats.totalFeesBlocked,
+      totalAuditsExecuted: auditStats.totalAuditsExecuted,
+      flaggedViolations: auditStats.flaggedViolations,
+      verifiedCandidates,
+      liveMigrationSteps,
       recentActivity,
       riskDistribution
     };
 
-    // Runtime Data Type Verification Layer (frontend-safe payload)
-    const verifiedFeesBlocked = (auditStats && typeof auditStats.totalFeesBlocked === 'number' && auditStats.totalFeesBlocked > 0)
-      ? auditStats.totalFeesBlocked
-      : 500380; // Secure fallback to preserve UI telemetry baseline
-
-    const verifiedPlacements = (typeof verifiedCandidates === 'number' && verifiedCandidates > 0)
-      ? verifiedCandidates
-      : 127;
-
-    // Use recentActivity as the authentic stream for frontend; map and strictly coerce types
-    const authenticStream = Array.isArray(recentActivity) && recentActivity.length > 0 ? recentActivity : [];
-
-    if (authenticStream.length === 0) {
-      return res.json(SIMULATION_DATA);
-    }
-
-    res.json({
-      success: true,
-      ethicalImpact: safeNumber(verifiedFeesBlocked, 500380),
-      verifiedActiveNodes: safeNumber(verifiedPlacements, 127),
-      globalSyncRate: 99.9,
-      recentActivity: authenticStream.map(doc => ({
-        nodeId: String(doc.id || "GLB-NODE-01"),
-        companyName: safeString(doc.companyName || doc.company || "System Ingestion"),
-        status: safeString(doc.status || "ETHICAL VERIFIED"),
-        riskAssessment: ["VERIFIED_COMPLIANT", "INVESTIGATE", "FLAGGED_VIOLATION"].includes(doc.riskLevel || doc.riskAssessment)
-          ? (doc.riskLevel || doc.riskAssessment)
-          : "INVESTIGATE"
-      }))
-    });
+    res.json(stats);
   } catch (mongoError) {
     console.warn("⚠️ Atlas connection timed out or failed. Serving local simulation dataset safely.");
     res.json(SIMULATION_DATA);
@@ -225,22 +147,22 @@ app.post("/api/audit", async (req, res) => {
   });
   
   try {
-    console.log("🧠 Processing audit request via Gemini 2.5 Flash Lite AI...");
+    console.log("🧠 Processing audit request via Gemini 2.5 Flash AI...");
     const systemProtocol = loadSystemProtocol();
     const prompt = `${systemProtocol}\n\nAnalyze text:\n${text}`;
 
     let aiAnalysis;
     try {
-      // Race Gemini API against our 15-second clock
+      // Race Gemini API against our 3-second clock
       const result = await withTimeout(ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
           temperature: 0.7,
           systemInstruction: "You are the Oversight Sentinel engine. Output strictly in valid JSON."
         }
-      }), 15000);
+      }), 3000);
       
       aiAnalysis = JSON.parse(result.text);
     } catch (apiError) {
@@ -295,12 +217,12 @@ app.post("/api/market-chat", async (req, res) => {
     let responseText;
 
     try {
-      // Race Chat API against our 15-second clock
+      // Race Chat API against our 3-second clock
       const result = await withTimeout(ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-flash",
         contents: `${systemPrompt}\n\nUser Question: ${message}`,
         config: { temperature: 0.7 }
-      }), 15000);
+      }), 3000);
       
       responseText = result.text;
     } catch (apiError) {
@@ -314,60 +236,6 @@ app.post("/api/market-chat", async (req, res) => {
   }
 });
 
-// Reverse Proxy: Forward requests to the old Python Qdrant engine
-app.all("/api/old-library/*", async (req, res) => {
-  const wildcardPath = req.params[0];
-  const targetUrl = `http://127.0.0.1:10000/api/${wildcardPath}`;
-
-  try {
-    const fetchOptions = {
-      method: req.method,
-      headers: { ...req.headers }
-    };
-
-    // Prevent Host header mismatch on target server
-    delete fetchOptions.headers.host;
-
-    if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method) && req.body) {
-      fetchOptions.body = JSON.stringify(req.body);
-      fetchOptions.headers["content-type"] = "application/json";
-    }
-
-    const response = await fetch(targetUrl, fetchOptions);
-
-    res.status(response.status);
-
-    response.headers.forEach((value, name) => {
-      if (name.toLowerCase() !== "transfer-encoding" && name.toLowerCase() !== "connection") {
-        res.setHeader(name, value);
-      }
-    });
-
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      const data = await response.json();
-      res.json(data);
-    } else {
-      const text = await response.text();
-      res.send(text);
-    }
-  } catch (error) {
-    console.error(`❌ Proxy error forwarding request to ${targetUrl}:`, error);
-    res.status(502).json({ error: "Failed to connect to the old library service" });
-  }
-});
-
-// Global Fallback Catch-All Route Middleware Handler
-app.use((req, res, next) => {
-  res.status(404).json({ error: "Oversight Sentinel target API route not found" });
-});
-
-// Centralized System Application Level Error Boundaries handling layer
-app.use((err, req, res, next) => {
-  console.error("❌ Critical server-side error unhandled catch:", err.stack);
-  res.status(500).json({ error: "Internal compliance architecture pipeline disruption detected" });
-});
-
 // Start server
 app.listen(PORT, () => {
   console.log("\n" + "═".repeat(70));
@@ -375,6 +243,5 @@ app.listen(PORT, () => {
   console.log("║         OVERSIGHT SENTINEL DASHBOARD SERVER ACTIVE               ║");
   console.log("╚══════════════════════════════════════════════════════════════════╝");
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Current Tracked Engine Metrics Runtime Stability Status: Active`);
   console.log("═".repeat(70) + "\n");
 });

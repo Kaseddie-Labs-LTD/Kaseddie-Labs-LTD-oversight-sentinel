@@ -14,8 +14,30 @@
         <!-- Header Bar -->
         <header class="header-bar">
             <div class="header-title">
-                <h1>KASEDDIE LABS LTD | OVERSIGHT SENTINEL v2.0.0</h1>
+                <h1>KASEDDIE LABS LTD | GLOBAL ENTERPRISE PLATFORM v2.0.0</h1>
             </div>
+            <nav class="header-nav">
+                <button class="nav-toggle active" data-view="compliance">
+                    <span class="nav-icon">🌐</span>
+                    <span class="nav-label">Compliance Overwatch</span>
+                </button>
+                <button class="nav-toggle" data-view="b2b">
+                    <span class="nav-icon">💼</span>
+                    <span class="nav-label">B2B Partner Hub</span>
+                </button>
+                <button class="nav-toggle" data-view="artisan">
+                    <span class="nav-icon">📣</span>
+                    <span class="nav-label">Artisan Media Suite</span>
+                </button>
+                <button class="nav-toggle" data-view="admin-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Admin Dashboard</span>
+                </button>
+                <button class="nav-toggle" data-view="hr-portal">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">HR Portal</span>
+                </button>
+            </nav>
             <div class="system-status">
                 <span class="status-indicator"></span>
                 <span class="status-text">SYSTEM ACTIVE</span>
@@ -108,6 +130,40 @@
                     <!-- Entries will be dynamically populated by app.js -->
                 </div>
             </section>
+        </div>
+    </div>
+
+    <!-- Drawer Modal for Drill-Down Details -->
+    <div id="drawer" class="drawer">
+        <div class="drawer-content" id="drawerContent">
+            <!-- Content will be dynamically populated by app.js -->
+        </div>
+    </div>
+
+    <!-- GlobalPath AI Assistant Chatbot Panel -->
+    <div id="chatbotPanel" class="chatbot-panel">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <span class="chatbot-icon">🤖</span>
+                <span>GlobalPath AI Assistant</span>
+            </div>
+            <button class="chatbot-toggle" id="chatbotToggle">−</button>
+        </div>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    <div class="message-content">Welcome to GlobalPath AI! I'm your market intelligence assistant. Ask me anything about recruitment trends, compliance regulations, or market opportunities.</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <textarea 
+                    id="chatInput" 
+                    class="chat-input" 
+                    placeholder="Ask about market intelligence..."
+                    rows="2"
+                ></textarea>
+                <button id="chatSendBtn" class="chat-send-btn">Send</button>
+            </div>
         </div>
     </div>
 
