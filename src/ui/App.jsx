@@ -98,11 +98,11 @@ export default function App() {
           </div>
           <div style={styles.metricItem}>
             <span style={styles.metricLabel}>ACTIVE NODES:</span>
-            <span style={styles.metricValue} style={{ color: '#00ffcc' }}>127</span>
+            <span style={{...styles.metricValue, color: '#00ffcc'}}>127</span>
           </div>
           <div style={styles.metricItem}>
             <span style={styles.metricLabel}>PIPELINE SYNC:</span>
-            <span style={styles.metricValue} style={{ color: '#00ffcc' }}>99.9%</span>
+            <span style={{...styles.metricValue, color: '#00ffcc'}}>99.9%</span>
           </div>
         </div>
       </header>
