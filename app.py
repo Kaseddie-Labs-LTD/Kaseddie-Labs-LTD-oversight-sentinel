@@ -1,7 +1,7 @@
 import os
 import time
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from pymongo import MongoClient
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -158,7 +158,8 @@ def serve_frontend(path):
         return send_from_directory(app.static_folder, path)
     else:
         # Serve the core HTML file from the public folder (fallback when no static asset matches)
-        return send_from_directory('public', 'index.html')
+    # Otherwise, serve the compiled index.html from the dist folder
+    return render_template('index.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 4000))
