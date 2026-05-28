@@ -7,7 +7,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 import google.generativeai as genai
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__, template_folder='dist', static_folder='dist', static_url_path='')
 
 # ===========================================================================
 # 1. CLOUD STORAGE & COGNITIVE LOGIC INITIALIZATION
