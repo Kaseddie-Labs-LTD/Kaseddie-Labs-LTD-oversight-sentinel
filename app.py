@@ -22,7 +22,7 @@ qdrant_client = QdrantClient(
 )
 
 genai.configure(api_key=os.environ.get("VERTEX_API_KEY") or os.environ.get("GEMINI_API_KEY"))
-ai_model = genai.GenerativeModel('gemini-1.5-flash')
+ai_model = genai.GenerativeModel('gemini-3.1-flash-lite')
 
 # SYSTEM LAW PROTOCOL DEFINITION
 SYSTEM_PROTOCOL = (
@@ -64,7 +64,7 @@ def submit_compliance_pipeline():
             "corridor": corridor,
             "ai_analysis": {
                 "summary": compliance_summary,
-                "engine": "gemini-1.5-flash"
+                "engine": "gemini-3.1-flash-lite"
             },
             "metadata": metadata,
             "auditTimestamp": datetime.utcnow()
