@@ -109,15 +109,40 @@ export default function App() {
 
       <div style={styles.mainLayout}>
         {/* GLASSMORPHISM SIDEBAR NAVIGATION */}
-        <nav style={styles.sidebarNav}>
-          <div style={styles.sidebarHeader}>COMMAND SECTIONS</div>
-          <button onClick={() => setCurrentView('compliance')} style={{ ...styles.navButton, ...(currentView === 'compliance' ? styles.navButtonActive : {})}>🛡️ Compliance Overwatch</button>
-          <button onClick={() => setCurrentView('partner')} style={{ ...styles.navButton, ...(currentView === 'partner' ? styles.navButtonActive : {})}>🤝 B2B Partner Hub</button>
-          <button onClick={() => setCurrentView('media')} style={{ ...styles.navButton, ...(currentView === 'media' ? styles.navButtonActive : {})}>🎨 Artisan Media Suite</button>
-          <button onClick={() => setCurrentView('hr')} style={{ ...styles.navButton, ...(currentView === 'hr' ? styles.navButtonActive : {})}>👥 HR Recruitment Portal</button>
-          <button onClick={() => setCurrentView('admin')} style={{ ...styles.navButton, ...(currentView === 'admin' ? styles.navButtonActive : {})}>⚙️ Admin Dashboard</button>
-          <div style={styles.sidebarFooter}>v2.0.0 Stable Build</div>
-        </nav>
+                  <nav style={styles.sidebarNav}>
+            <div style={styles.sidebarHeader}>COMMAND SECTIONS</div>
+            <button 
+              onClick={() => setCurrentView('compliance')} 
+              style={{...styles.navButton, ...(currentView === 'compliance' ? styles.navButtonActive : {})}}
+            >
+              🛡️ Compliance Overwatch
+            </button>
+            <button 
+              onClick={() => setCurrentView('partner')} 
+              style={{...styles.navButton, ...(currentView === 'partner' ? styles.navButtonActive : {})}}
+            >
+              🤝 B2B Partner Hub
+            </button>
+            <button 
+              onClick={() => setCurrentView('media')} 
+              style={{...styles.navButton, ...(currentView === 'media' ? styles.navButtonActive : {})}}
+            >
+              🎨 Artisan Media Suite
+            </button>
+            <button 
+              onClick={() => setCurrentView('hr')} 
+              style={{...styles.navButton, ...(currentView === 'hr' ? styles.navButtonActive : {})}}
+            >
+              👥 HR Recruitment Portal
+            </button>
+            <button 
+              onClick={() => setCurrentView('admin')} 
+              style={{...styles.navButton, ...(currentView === 'admin' ? styles.navButtonActive : {})}}
+            >
+              ⚙️ Admin Dashboard
+            </button>
+            <div style={styles.sidebarFooter}>v2.0.0 Stable Build</div>
+          </nav>
 
         {/* MAIN DYNAMIC VIEWPORT WORKSPACE */}
         <main style={styles.mainViewport}>
