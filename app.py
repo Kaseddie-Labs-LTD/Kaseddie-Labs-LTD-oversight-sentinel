@@ -157,7 +157,8 @@ def serve_frontend(path):
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
-        return send_from_directory(app.static_folder, 'index.html')
+        # Serve the core HTML file from the public folder (fallback when no static asset matches)
+        return send_from_directory('public', 'index.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 4000))
