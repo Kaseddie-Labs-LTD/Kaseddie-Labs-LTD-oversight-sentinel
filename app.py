@@ -151,14 +151,14 @@ def trigger_worker_pulse_checks():
 # ===========================================================================
 # 4. STATIC ASSET ROUTING FOR RENDER WEB CONTAINER
 # ===========================================================================
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+    # If a specific static asset is requested and exists in the dist folder, serve it
+    if path and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
-    else:
-        # Serve the core HTML file from the public folder (fallback when no static asset matches)
-    # Otherwise, serve the compiled index.html from the dist folder
+    # Otherwise, serve the compiled React index.html from the dist folder
     return render_template('index.html')
 
 if __name__ == '__main__':
