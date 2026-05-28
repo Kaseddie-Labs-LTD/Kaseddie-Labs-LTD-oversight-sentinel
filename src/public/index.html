@@ -10,133 +10,41 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Header Bar -->
-        <header class="header-bar">
-            <div class="header-title">
-                <h1>KASEDDIE LABS LTD | GLOBAL ENTERPRISE PLATFORM v2.0.0</h1>
-            </div>
-            <nav class="header-nav">
-                <button class="nav-toggle active" data-view="compliance">
-                    <span class="nav-icon">🌐</span>
-                    <span class="nav-label">Compliance Overwatch</span>
-                </button>
-                <button class="nav-toggle" data-view="b2b">
-                    <span class="nav-icon">💼</span>
-                    <span class="nav-label">B2B Partner Hub</span>
-                </button>
-                <button class="nav-toggle" data-view="artisan">
-                    <span class="nav-icon">📣</span>
-                    <span class="nav-label">Artisan Media Suite</span>
-                </button>
-                <button class="nav-toggle" data-view="admin-dashboard">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-label">Admin Dashboard</span>
-                </button>
-                <button class="nav-toggle" data-view="hr-portal">
-                    <span class="nav-icon">👤</span>
-                    <span class="nav-label">HR Portal</span>
-                </button>
-            </nav>
-            <div class="system-status">
-                <span class="status-indicator"></span>
-                <span class="status-text">SYSTEM ACTIVE</span>
-            </div>
-        </header>
-
-        <!-- Telemetry Banner -->
-        <section class="telemetry-banner">
-            <div class="glass-card telemetry-card">
-                <div class="card-icon">💰</div>
-                <div class="card-content">
-                    <div class="card-label">Ethical Impact</div>
-                    <div class="card-value">$500,000</div>
-                </div>
-            </div>
-            <div class="glass-card telemetry-card">
-                <div class="card-icon">🌐</div>
-                <div class="card-content">
-                    <div class="card-label">Verified Active Nodes</div>
-                    <div class="card-value">200</div>
-                </div>
-            </div>
-            <div class="glass-card telemetry-card">
-                <div class="card-icon">⚡</div>
-                <div class="card-content">
-                    <div class="card-label">Global Sync</div>
-                    <div class="card-value">99.9%</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Grid Layout -->
-        <div class="main-grid">
-            <!-- 4-Point Handshake Tracking Matrix -->
-            <section class="glass-card handshake-panel">
-                <h2 class="panel-title">4-POINT DIGITAL CUSTODY HANDSHAKE</h2>
-                <div id="handshakeMatrix" class="handshake-matrix">
-                    <div class="handshake-worker">
-                        <div class="worker-info">
-                            <div class="worker-name">Nakimuli Sarah</div>
-                            <div class="worker-id">UG-2024-7842</div>
-                            <div class="worker-destination">Dubai, UAE</div>
-                        </div>
-                        <div class="handshake-nodes">
-                            <div class="handshake-node verified" data-node="source">
-                                <div class="node-icon">🏠</div>
-                                <div class="node-label">Source Node</div>
-                                <div class="node-status">✅ Verified</div>
-                            </div>
-                            <div class="handshake-node verified" data-node="bridge">
-                                <div class="node-icon">🌉</div>
-                                <div class="node-label">Sovereign Bridge</div>
-                                <div class="node-status">✅ Verified</div>
-                            </div>
-                            <div class="handshake-node flagged" data-node="destination">
-                                <div class="node-icon">🏢</div>
-                                <div class="node-label">Destination Node</div>
-                                <div class="node-status">⚠️ Flagged</div>
-                            </div>
-                            <div class="handshake-node pending" data-node="hub">
-                                <div class="node-icon">📡</div>
-                                <div class="node-label">Sentinel Hub</div>
-                                <div class="node-status">⏳ Pending</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Ingestion Bay Form -->
-            <section class="glass-card ingestion-panel">
-                <h2 class="panel-title">INGESTION BAY</h2>
-                <div class="form-container">
-                    <textarea 
-                        id="auditInput" 
-                        class="audit-input" 
-                        placeholder="Paste raw recruitment description here for autonomous compliance analysis..."
-                        rows="6"
-                    ></textarea>
-                    <button id="runAuditBtn" class="glow-button">
-                        RUN AUTONOMOUS COMPLIANCE AUDIT
-                    </button>
-                </div>
-            </section>
-
-            <!-- Live Audit Ledger Stream -->
-            <section class="glass-card ledger-panel">
-                <h2 class="panel-title">LIVE AUDIT LEDGER STREAM</h2>
-                <div id="ledgerStream" class="ledger-stream">
-                    <!-- Entries will be dynamically populated by app.js -->
-                </div>
-            </section>
+    <!-- Application Container -->
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar-nav">
+            <button class="nav-toggle active" data-view="compliance">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-label">Compliance Overwatch</span>
+            </button>
+            <button class="nav-toggle" data-view="b2b">
+                <span class="nav-icon">💼</span>
+                <span class="nav-label">B2B Partner Hub</span>
+            </button>
+            <button class="nav-toggle" data-view="artisan">
+                <span class="nav-icon">📣</span>
+                <span class="nav-label">Artisan Media Suite</span>
+            </button>
+            <button class="nav-toggle" data-view="admin-dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Admin Dashboard</span>
+            </button>
+            <button class="nav-toggle" data-view="hr-portal">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">HR Portal</span>
+            </button>
+        </nav>
+        <!-- Main Content Viewport -->
+        <div id="main-viewport" class="main-viewport">
+            <!-- Default view will be injected by app.js -->
         </div>
     </div>
 
     <!-- Drawer Modal for Drill-Down Details -->
     <div id="drawer" class="drawer">
         <div class="drawer-content" id="drawerContent">
-            <!-- Content will be dynamically populated by app.js -->
+            <!-- Dynamic content injected by app.js -->
         </div>
     </div>
 
@@ -156,12 +64,7 @@
                 </div>
             </div>
             <div class="chat-input-container">
-                <textarea 
-                    id="chatInput" 
-                    class="chat-input" 
-                    placeholder="Ask about market intelligence..."
-                    rows="2"
-                ></textarea>
+                <textarea id="chatInput" class="chat-input" placeholder="Ask about market intelligence..." rows="2"></textarea>
                 <button id="chatSendBtn" class="chat-send-btn">Send</button>
             </div>
         </div>

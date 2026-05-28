@@ -321,28 +321,29 @@ class OversightSentinelApp {
     // Switch between views
     switchView(view) {
         this.currentView = view;
-        const mainGrid = document.querySelector('.main-grid');
+        const mainViewport = document.querySelector('.main-viewport');
+        if (!mainViewport) return;
         
         // Fade out current content
-        mainGrid.style.opacity = '0';
-        mainGrid.style.transition = 'opacity 0.3s ease';
+        mainViewport.style.opacity = '0';
+        mainViewport.style.transition = 'opacity 0.3s ease';
         
         setTimeout(() => {
             // Update content based on view
             this.updateViewContent(view);
             
             // Fade in new content
-            mainGrid.style.opacity = '1';
+            mainViewport.style.opacity = '1';
         }, 300);
     }
 
     // Update view content
     updateViewContent(view) {
-        const mainGrid = document.querySelector('.main-grid');
+        const mainViewport = document.querySelector('.main-viewport');
         
         if (view === 'compliance') {
             // Show compliance dashboard (current layout)
-            mainGrid.innerHTML = `
+            mainViewport.innerHTML = `
                 <section class="glass-card handshake-panel">
                     <h2 class="panel-title">4-POINT DIGITAL CUSTODY HANDSHAKE</h2>
                     <div id="handshakeMatrix" class="handshake-matrix">
@@ -416,7 +417,7 @@ class OversightSentinelApp {
             
         } else if (view === 'b2b') {
             // Show B2B Partner Hub
-            mainGrid.innerHTML = `
+            mainViewport.innerHTML = `
                 <section class="glass-card b2b-panel" style="grid-column: 1 / -1;">
                     <h2 class="panel-title">B2B PARTNER HUB</h2>
                     <div class="b2b-content">
@@ -461,7 +462,7 @@ class OversightSentinelApp {
             
         } else if (view === 'artisan') {
             // Show Artisan Media Suite
-            mainGrid.innerHTML = `
+            mainViewport.innerHTML = `
                 <section class="glass-card artisan-panel" style="grid-column: 1 / -1;">
                     <h2 class="panel-title">ARTISAN MEDIA SUITE</h2>
                     <div class="artisan-content">
@@ -506,7 +507,7 @@ class OversightSentinelApp {
             }
         } else if (view === 'admin-dashboard') {
             // Show Admin Dashboard view
-            mainGrid.innerHTML = `
+            mainViewport.innerHTML = `
                 <section class="glass-card admin-dashboard-panel" style="grid-column: 1 / -1;">
                     <h2 class="panel-title">ADMINISTRATIVE COMPLIANCE OVERWATCH (REALTIME MONITORS)</h2>
                     <div class="data-vitals" id="dataVitals">
@@ -537,7 +538,7 @@ class OversightSentinelApp {
             this.loadAdminDashboardData();
         } else if (view === 'hr-portal') {
             // Show HR Portal view
-            mainGrid.innerHTML = `
+            mainViewport.innerHTML = `
                 <section class="glass-card hr-panel" style="grid-column: 1 / -1;">
                     <h2 class="panel-title">HR PERSONNEL SEMANTIC SEARCH ENGINE (VECTOR QDRANT VAULT)</h2>
                     <div class="hr-portal-search">

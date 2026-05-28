@@ -1503,3 +1503,56 @@ body {
     font-family: 'JetBrains Mono', monospace;
 }
 
+/* Professional Enterprise Layout Shell */
+.app-container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 70px 1fr;
+    grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+    min-height: 100vh;
+    background-color: #0b0f19;
+    color: #f3f4f6;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Sidebar Navigation Panel */
+.sidebar-nav {
+    grid-area: sidebar;
+    background-color: #111827;
+    border-right: 1px solid #1f2937;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+}
+
+/* Persistent Global Telemetry Header */
+.global-header {
+    grid-area: header;
+    background-color: #111827;
+    border-bottom: 1px solid #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+}
+
+/* Main Spacious Workspace Canvas */
+.main-viewport {
+    grid-area: main;
+    padding: 2rem;
+    overflow-y: auto;
+    background-color: #0b0f19;
+}
+
+/* Modular View Wrapper */
+.portal-stage {
+    background: #1f2937;
+    border-radius: 12px;
+    border: 1px solid #374151;
+    padding: 2rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.25s ease-in-out;
+}
